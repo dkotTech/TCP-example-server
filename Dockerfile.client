@@ -3,9 +3,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN go build -o client cmd/client/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o client cmd/client/main.go
 
-FROM debian:bookworm-slim
+FROM scratch
 WORKDIR /app
 COPY --from=builder /app/client .
 EXPOSE 8080
